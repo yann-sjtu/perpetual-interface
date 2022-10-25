@@ -1,0 +1,4 @@
+export const DEFAULT_DEADLINE_FROM_NOW = 60 * 30;
+export const NetworkContextName = "NETWORK";
+export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const FOUR_WEEKS_IN_SECONDS = 60 * 60 * 24 * 28;
