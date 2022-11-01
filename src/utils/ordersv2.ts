@@ -78,6 +78,7 @@ export class Orders {
    * loaded into web3 and SigningMethod.Hash is used.
    */
   public async signOrder(
+    encodeHash: string,
     order: Order,
     signingMethod: SigningMethod
   ): Promise<string> {
@@ -85,10 +86,9 @@ export class Orders {
       case SigningMethod.Hash:
       case SigningMethod.UnsafeHash:
       case SigningMethod.Compatibility: {
-        const orderHash = this.getOrderHash(order);
         const rawSignature = await this.provider
           .getSigner(order.maker)
-          .signMessage(ethers.utils.arrayify(orderHash));
+          .signMessage(ethers.utils.arrayify(encodeHash));
         const hashSig = createTypedSignature(
           rawSignature,
           SIGNATURE_TYPES.DECIMAL
@@ -103,7 +103,7 @@ export class Orders {
         if (signingMethod === SigningMethod.UnsafeHash) {
           return unsafeHashSig;
         }
-        if (hashHasValidSignature(orderHash, unsafeHashSig, order.maker)) {
+        if (hashHasValidSignature(encodeHash, unsafeHashSig, order.maker)) {
           return unsafeHashSig;
         }
         return hashSig;

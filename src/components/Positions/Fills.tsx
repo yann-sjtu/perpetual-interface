@@ -55,12 +55,12 @@ export default function Fills(props: FillsProps) {
   const fills = useAppSelector(selectFills);
   const dispatch = useAppDispatch();
 
-  const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
-    onOpen: () => console.log("WebSocket connection opened."),
-    onClose: () => console.log("WebSocket connection closed."),
-    shouldReconnect: (closeEvent: any) => true,
-    onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
-  });
+  // const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
+  //   onOpen: () => console.log("WebSocket connection opened."),
+  //   onClose: () => console.log("WebSocket connection closed."),
+  //   shouldReconnect: (closeEvent: any) => true,
+  //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
+  // });
 
   const processMessages = (event: { data: string }) => {
     const response = JSON.parse(event.data);
@@ -90,14 +90,15 @@ export default function Fills(props: FillsProps) {
         requestId: random.toFixed(0),
         payload: { trader: account },
       };
-      sendJsonMessage(subscribeMessage);
+      // sendJsonMessage(subscribeMessage);
     }
 
     dispatch(clearFills());
     if (account) {
       connect("PBTC-USD");
     }
-  }, [sendJsonMessage, account, dispatch]);
+  }, []);
+  // }, [sendJsonMessage, account, dispatch]);
 
   const process = (data: Fill[]) => {
     if (data?.length > 0) {

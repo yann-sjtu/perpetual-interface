@@ -72,12 +72,12 @@ export default function Orders(props: OrdersProps) {
     );
     dispatch(removeOrder(orderHash));
   }
-  const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
-    onOpen: () => console.log("WebSocket connection opened."),
-    onClose: () => console.log("WebSocket connection closed."),
-    shouldReconnect: (closeEvent: any) => true,
-    onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
-  });
+  // const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
+  //   onOpen: () => console.log("WebSocket connection opened."),
+  //   onClose: () => console.log("WebSocket connection closed."),
+  //   shouldReconnect: (closeEvent: any) => true,
+  //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
+  // });
 
   const processMessages = (event: { data: string }) => {
     const response = JSON.parse(event.data);
@@ -106,13 +106,14 @@ export default function Orders(props: OrdersProps) {
         requestId: random.toFixed(0),
         payload: { trader: account },
       };
-      sendJsonMessage(subscribeMessage);
+      // sendJsonMessage(subscribeMessage);
     }
     if (account) {
       dispatch(clearOrders());
       connect("PBTC-USD");
     }
-  }, [sendJsonMessage, account, dispatch]);
+  }, []);
+  // }, [sendJsonMessage, account, dispatch]);
 
   return (
     <TableContainer>

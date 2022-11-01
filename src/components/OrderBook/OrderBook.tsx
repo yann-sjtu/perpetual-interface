@@ -60,12 +60,12 @@ export default function OrderBook() {
   const bids = useAppSelector(selectBids);
   const asks = useAppSelector(selectAsks);
   const dispatch = useAppDispatch();
-  const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
-    onOpen: () => console.log("WebSocket connection opened."),
-    onClose: () => console.log("WebSocket connection closed."),
-    shouldReconnect: (closeEvent: any) => true,
-    onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
-  });
+  // const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
+  //   onOpen: () => console.log("WebSocket connection opened."),
+  //   onClose: () => console.log("WebSocket connection closed."),
+  //   shouldReconnect: (closeEvent: any) => true,
+  //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
+  // });
 
   const processMessages = (event: { data: string }) => {
     const response = JSON.parse(event.data);
@@ -116,11 +116,12 @@ export default function OrderBook() {
         channel: "orders",
         requestId: random.toFixed(0),
       };
-      sendJsonMessage(subscribeMessage);
+      // sendJsonMessage(subscribeMessage);
     }
 
     connect("PBTC-USD");
-  }, [sendJsonMessage]);
+  }, []);
+  // }, [sendJsonMessage]);
 
   const formatPrice = (arg: number): string => {
     return arg.toLocaleString("en", {

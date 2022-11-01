@@ -31,7 +31,7 @@ import { useState } from "react";
 import { WarningIcon } from "@chakra-ui/icons";
 
 import RadioButton from "../RadioButton";
-import { createOrder } from "../../utils/utils";
+import { signPlaceOrder } from "../../utils/utils";
 
 function AmountToolTipLabel() {
   return (
@@ -150,14 +150,27 @@ export default function LimitOrder() {
     const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
     const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
     const baseUrl = `http://${SERVER_HOST}:${SERVER_PORT}`;
-    const url = `${baseUrl}/orderbook/v1/order`;
+    const url = `${baseUrl}/order`;
 
-    const orderData = await createOrder(
+    // step1:
+    console.log('account是地址：', account!)
+    const paramStr = `?maker=${account}&isBuy=${isBuy}&amount=${orderArgs.size}&limitPrice=${orderArgs.price}`;
+
+    const constructOrder = await axios.get(url + paramStr);
+    const orderBytes = constructOrder.data.order
+    const encodeHash = `0x${constructOrder.data.hash}`;
+
+    // step2:
+    const signature = await signPlaceOrder(
+      encodeHash,
       { ...orderArgs, account: account!, isBuy },
       library
     );
+    console.log('签名：', signature);
 
-    const res = await axios.post(url, orderData);
+    // step3:
+    const url2 = `${baseUrl}/placeorder`;
+    const res = await axios.get(`${url2}?signedOrder=${orderBytes}${signature}`);
   };
   return (
     <VStack align="left">

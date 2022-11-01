@@ -35,12 +35,13 @@ export default function Account(props: { switchMode: (mode: Mode) => void }) {
 
   useEffect(() => {
     const fetchAccountBalance = async () => {
-      const url = `http://${SERVER_HOST}:${SERVER_PORT}/account/v1/${account}`;
+      // const url = `http://${SERVER_HOST}:${SERVER_PORT}/account/v1/${account}`;
+      const url = `http://${SERVER_HOST}:${SERVER_PORT}/position?addr=${account}`;
       const res = await axios.get(url);
-      const market = "PBTC-USDC";
-      const balance = res.data.balances[market];
+      const margin = res.data.margin;
+      const position = res.data.position;
       dispatch(
-        updatePosition({ margin: balance.margin, position: balance.position })
+        updatePosition({ margin: margin, position: position })
       );
     };
     if (account) {

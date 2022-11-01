@@ -260,12 +260,14 @@ function jsonifyPerpetualOrder(order: SignedOrder) {
   };
 }
 
-export async function createOrder(
-  orderArgs: { price: string; size: string; account: string; isBuy: boolean },
-  library: any
+
+export async function signPlaceOrder(
+    encodeHash: string,
+    orderArgs: { price: string; size: string; account: string; isBuy: boolean },
+    library: any
 ) {
   const realExpiration = new BigNumber(FOUR_WEEKS_IN_SECONDS).plus(
-    Math.round(new Date().getTime() / 1000)
+      Math.round(new Date().getTime() / 1000)
   );
   const order: OrderV2 = {
     maker: orderArgs.account,
@@ -290,10 +292,47 @@ export async function createOrder(
   }
 
   const orders = new Orders(library, parseInt(networkId), address);
-  const typedSignature = await orders.signOrder(order, SigningMethod.Hash);
-  const signedOrder: SignedOrder = {
-    ...order,
-    typedSignature,
-  };
-  return jsonifyPerpetualOrder(signedOrder);
+  console.log('orders', order, orders);
+  const typedSignature = await orders.signOrder(encodeHash, order, SigningMethod.Hash);
+
+  return typedSignature;
 }
+
+// export async function createOrder(
+//   orderArgs: { price: string; size: string; account: string; isBuy: boolean },
+//   library: any
+// ) {
+//   const realExpiration = new BigNumber(FOUR_WEEKS_IN_SECONDS).plus(
+//     Math.round(new Date().getTime() / 1000)
+//   );
+//   const order: OrderV2 = {
+//     maker: orderArgs.account,
+//     taker: NULL_ADDRESS,
+//     limitFee: new Fee(0),
+//     isBuy: orderArgs.isBuy,
+//     isDecreaseOnly: false,
+//     amount: new BigNumber(orderArgs.size),
+//     limitPrice: new Price(orderArgs.price),
+//     triggerPrice: new Price(0),
+//     expiration: realExpiration,
+//     salt: generatePseudoRandom256BitNumber(),
+//   };
+//   const networkId = process.env.REACT_APP_NETWORK_ID;
+//   if (typeof networkId === "undefined") {
+//     throw new Error(`env of "REACT_APP_NETWORK_ID" is undefined`);
+//   }
+//
+//   const address = process.env.REACT_APP_P1OrderAddr;
+//   if (typeof address === "undefined") {
+//     throw new Error(`env of "REACT_APP_P1OrderAddr" is undefined`);
+//   }
+//
+//   const orders = new Orders(library, parseInt(networkId), address);
+//   console.log('orders', order, orders);
+//   const typedSignature = await orders.signOrder(order, SigningMethod.Hash);
+//   const signedOrder: SignedOrder = {
+//     ...order,
+//     typedSignature,
+//   };
+//   return jsonifyPerpetualOrder(signedOrder);
+// }

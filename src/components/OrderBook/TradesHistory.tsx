@@ -52,12 +52,12 @@ export default function TradesHistory() {
   const tradesHistory = useAppSelector(selectTrades);
   const dispatch = useAppDispatch();
 
-  const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
-    onOpen: () => console.log("WebSocket connection opened."),
-    onClose: () => console.log("WebSocket connection closed."),
-    shouldReconnect: (closeEvent: any) => true,
-    onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
-  });
+  // const { sendJsonMessage, getWebSocket } = useWebSocket(WSS_FEED_URL, {
+  //   onOpen: () => console.log("WebSocket connection opened."),
+  //   onClose: () => console.log("WebSocket connection closed."),
+  //   shouldReconnect: (closeEvent: any) => true,
+  //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
+  // });
 
   const processMessages = (event: { data: string }) => {
     const response = JSON.parse(event.data);
@@ -74,12 +74,13 @@ export default function TradesHistory() {
         requestId: random.toFixed(0),
         payload: { maker: NULL_ADDRESS },
       };
-      sendJsonMessage(subscribeMessage);
+      // sendJsonMessage(subscribeMessage);
     }
     dispatch(clearTradesHistory());
 
     connect("PBTC-USD");
-  }, [sendJsonMessage, dispatch]);
+  }, []);
+  // }, [sendJsonMessage, dispatch]);
 
   const process = (data: TradeRecord[]) => {
     if (data?.length > 0) {
