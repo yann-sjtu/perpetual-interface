@@ -170,7 +170,7 @@ export default function LimitOrder() {
 
     // step3:
     const url2 = `${baseUrl}/placeorder`;
-    const res = await axios.get(`${url2}?signedOrder=${orderBytes}${signature}`);
+    const res = await axios.get(`${url2}?signedOrder=${orderBytes}${signature.substring(2)}`);
   };
   return (
     <VStack align="left">
