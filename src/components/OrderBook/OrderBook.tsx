@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import useWebSocket from "react-use-websocket";
 import { useEffect } from "react";
-
+import axios from "axios";
 import {
   addAsks,
   addBids,
@@ -36,6 +36,7 @@ import {
 import PriceLevelRow from "./PriceLevelRow";
 import Spread from "./Spread";
 import { ApiOrder } from "../../utils/types";
+import {stringify} from "querystring";
 
 interface DeltaOrders {
   bids: ApiOrder[];
@@ -67,22 +68,38 @@ export default function OrderBook() {
   //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
   // });
 
-  const processMessages = (event: { data: string }) => {
-    const response = JSON.parse(event.data);
-    const bids = response.payload
-      .filter((order: any) => order.order.isBuy)
-      .map((sraOrder: any) => ({
-        price: sraOrder.order.limitPrice.value,
-        size: sraOrder.order.amount - sraOrder.metaData.filledAmount,
-        hash: sraOrder.metaData.orderHash,
-      }));
-    const asks = response.payload
-      .filter((order: any) => !order.order.isBuy)
-      .map((sraOrder: any) => ({
-        price: sraOrder.order.limitPrice.value,
-        size: sraOrder.order.amount - sraOrder.metaData.filledAmount,
-        hash: sraOrder.metaData.orderHash,
-      }));
+  // const processMessages = (event: { data: string }) => {
+  //   const response = JSON.parse(event.data);
+  //   const bids = response.payload
+  //     .filter((order: any) => order.order.isBuy)
+  //     .map((sraOrder: any) => ({
+  //       price: sraOrder.order.limitPrice.value,
+  //       size: sraOrder.order.amount - sraOrder.metaData.filledAmount,
+  //       hash: sraOrder.metaData.orderHash,
+  //     }));
+  //   const asks = response.payload
+  //     .filter((order: any) => !order.order.isBuy)
+  //     .map((sraOrder: any) => ({
+  //       price: sraOrder.order.limitPrice.value,
+  //       size: sraOrder.order.amount - sraOrder.metaData.filledAmount,
+  //       hash: sraOrder.metaData.orderHash,
+  //     }));
+  //
+  //   process({ bids, asks });
+  // };
+  const processMessages = (data: any) => {
+    const bids = data.buy_levels
+        .map((sraOrder: any) => ({
+          price: sraOrder.price,
+          size: sraOrder.amount,
+          hash: '',
+        }));
+    const asks = data.sell_levels
+        .map((sraOrder: any) => ({
+          price: sraOrder.price,
+          size: sraOrder.amount,
+          hash: '',
+        }));
 
     process({ bids, asks });
   };
@@ -107,6 +124,19 @@ export default function OrderBook() {
       }
     }
   };
+
+  useEffect(() => {
+    setInterval(function () {
+
+    const url = `http://${SERVER_HOST}:${SERVER_PORT}/book`;
+    axios.get(url).then((r: any) => {
+      console.log(r.data);
+      processMessages(r.data);
+    }).finally( () => {
+    });
+    }, 2000);
+
+  }, []);
 
   useEffect(() => {
     function connect(product: string) {

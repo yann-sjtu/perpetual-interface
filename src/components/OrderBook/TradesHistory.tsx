@@ -21,6 +21,7 @@ import {
 import { NULL_ADDRESS } from "../../constants/misc";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { selectTrades, TradeRecord } from "../../state/tradesHistorySlice";
+import axios from "axios";
 
 interface TradeRecordRowProps {
   amount: string;
@@ -66,6 +67,19 @@ export default function TradesHistory() {
   };
 
   useEffect(() => {
+    setInterval(function () {
+
+      const url = `http://${SERVER_HOST}:${SERVER_PORT}/trades`;
+      axios.get(url).then((r: any) => {
+        console.log(r.data);
+        process(r.data);
+      }).finally( () => {
+      });
+    }, 2000);
+
+  }, []);
+
+  useEffect(() => {
     function connect(product: string) {
       const random = generatePseudoRandom256BitNumber();
       const subscribeMessage = {
@@ -82,7 +96,7 @@ export default function TradesHistory() {
   }, []);
   // }, [sendJsonMessage, dispatch]);
 
-  const process = (data: TradeRecord[]) => {
+  const process = (data: any) => {
     if (data?.length > 0) {
       currentTrades = [...currentTrades, ...data];
 
@@ -100,15 +114,16 @@ export default function TradesHistory() {
       minimumFractionDigits: 2,
     });
   };
-  const buildPriceLevels = (trades: TradeRecord[]): React.ReactNode => {
-    const sortedLevelsByPrice: TradeRecord[] = [...trades].sort(
-      (current: TradeRecord, next: TradeRecord) => {
-        return next.timestamp - current.timestamp;
-      }
-    );
+  const buildPriceLevels = (trades: any[]): React.ReactNode => {
+    // const sortedLevelsByPrice: any[] = [...trades].sort(
+    //   (current: any, next: any) => {
+    //     return next.time - current.time;
+    //   }
+    // );
+    const sortedLevelsByPrice = trades;
 
     return sortedLevelsByPrice.map((trade, idx) => {
-      const size: string = formatNumber(trade.amount);
+      const size: string = formatNumber(trade.size);
       const price: string = formatPrice(trade.price);
 
       return (
@@ -116,7 +131,7 @@ export default function TradesHistory() {
           <TradeRecordRow
             amount={size}
             price={price}
-            time={trade.timestamp.toString()}
+            time={trade.time.toString()}
           />
         </Box>
       );

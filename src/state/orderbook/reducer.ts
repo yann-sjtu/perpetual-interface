@@ -56,7 +56,8 @@ export const orderbookSlice = createSlice({
       const groupedCurrentBids = groupByTicketSize(payload, currentTicketSize);
 
       // state.bids = state.bids.concat(groupedCurrentBids);
-      state.bids = updateOrders(state.bids, groupedCurrentBids);
+      // state.bids = updateOrders(state.bids, groupedCurrentBids);
+      state.bids = groupedCurrentBids;
     },
 
     addAsks: (state, { payload }) => {
@@ -64,7 +65,8 @@ export const orderbookSlice = createSlice({
       const groupedCurrentAsks = groupByTicketSize(payload, currentTicketSize);
 
       // state.asks = state.asks.concat(groupedCurrentAsks);
-      state.asks = updateOrders(state.asks, groupedCurrentAsks);
+      // state.asks = updateOrders(state.asks, groupedCurrentAsks);
+      state.asks = groupedCurrentAsks;
     },
     setGrouping: (state, { payload }) => {
       state.groupingSize = payload;

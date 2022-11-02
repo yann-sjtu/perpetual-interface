@@ -27,7 +27,8 @@ export const tradesHistorySlice = createSlice({
   initialState,
   reducers: {
     addTradeRecords: (state, { payload }) => {
-      state.trades = state.trades.concat(payload);
+      // state.trades = state.trades.concat(payload);
+      state.trades = payload;
     },
 
     clearTradesHistory: (state) => {
