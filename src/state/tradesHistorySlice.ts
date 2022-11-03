@@ -7,8 +7,8 @@ export interface TradeRecord {
   maker: string;
   isBuy: boolean;
   price: number;
-  amount: number;
-  timestamp: number;
+  size: number;
+  time: number;
   blockNumber: number;
 }
 

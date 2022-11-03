@@ -60,18 +60,18 @@ export default function TradesHistory() {
   //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
   // });
 
-  const processMessages = (event: { data: string }) => {
-    const response = JSON.parse(event.data);
+  // const processMessages = (event: { data: string }) => {
+  //   const response = JSON.parse(event.data);
 
-    process(response.payload);
-  };
+  //   process(response.payload);
+  // };
 
   useEffect(() => {
     setInterval(function () {
 
       const url = `http://${SERVER_HOST}:${SERVER_PORT}/trades`;
       axios.get(url).then((r: any) => {
-        console.log(r.data);
+        // console.log(r.data);
         process(r.data);
       }).finally( () => {
       });

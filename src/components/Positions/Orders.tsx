@@ -50,14 +50,14 @@ export const ORDERBOOK_LEVELS: number = 0; // rows count
 
 function convertApiOrderToOrder(order: any): Order {
   return {
-    hash: order.metaData.orderHash,
+    hash: order.orderHash,
     status: Status.Limited,
-    side: order.order.isBuy ? Side.Buy : Side.Sell,
-    amountInETH: order.order.amount,
-    price: order.order.limitPrice.value,
-    trigger: order.order.triggerPrice.value,
-    goodTill: order.order.expiration,
-    filledAmountInETH: order.metaData.filledAmount,
+    side: order.isBuy ? Side.Buy : Side.Sell,
+    amountInETH: order.amount,
+    price: order.price,
+    trigger: order.triggerPrice,
+    goodTill: order.expiration,
+    filledAmountInETH: order.filledAmount,
   };
 }
 
@@ -79,10 +79,14 @@ export default function Orders(props: OrdersProps) {
   //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
   // });
 
-  const processMessages = (event: { data: string }) => {
-    const response = JSON.parse(event.data);
+  // const processMessages = (event: { data: string }) => {
+  //   const response = JSON.parse(event.data);
 
-    const orders = response.payload.map(convertApiOrderToOrder);
+  //   const orders = response.payload.map(convertApiOrderToOrder);
+  //   process(orders);
+  // };
+  const processMessages = (data: any) => {
+    const orders = data.map(convertApiOrderToOrder);
     process(orders);
   };
 
@@ -96,6 +100,34 @@ export default function Orders(props: OrdersProps) {
       }
     }
   };
+
+  useEffect(() => {
+    setInterval(function () {
+      if (account) {
+
+        const url = `http://${SERVER_HOST}:${SERVER_PORT}/orders?addr=${account}`;
+        axios.get(url).then((r: any) => {
+          console.log(r.data);
+          processMessages(r.data);
+        }).finally( () => {
+        });
+
+        const orders = [{
+          orderHash: '0x...',
+          status: 'open',
+          side: 'maker',
+          amount: 10,
+          filledAmount: 1,
+          price: 1500,
+          triggerPrice: 1501
+        }];
+        processMessages(orders);
+      } else {
+        console.log("orders account", account);
+      }
+    }, 2000);
+
+  }, []);
 
   useEffect(() => {
     function connect(product: string) {
@@ -127,7 +159,7 @@ export default function Orders(props: OrdersProps) {
             </Th>
             <Th>Price</Th>
             <Th>Trigger</Th>
-            <Th>Good Till</Th>
+            <Th>TakerOrMaker</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -141,7 +173,7 @@ export default function Orders(props: OrdersProps) {
                   </Td>
                   <Td isNumeric>${order.price}</Td>
                   <Td isNumeric>${order.trigger}</Td>
-                  <Td isNumeric>{order.goodTill}</Td>
+                  <Td isNumeric>Maker</Td>
                   {order.filledAmountInETH === order.amountInETH ? null : (
                     <Td>
                       <CloseButton

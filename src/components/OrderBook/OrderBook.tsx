@@ -88,18 +88,18 @@ export default function OrderBook() {
   //   process({ bids, asks });
   // };
   const processMessages = (data: any) => {
-    const bids = data.buy_levels
+    const bids = data.buy_levels ? data.buy_levels
         .map((sraOrder: any) => ({
           price: sraOrder.price,
           size: sraOrder.amount,
           hash: '',
-        }));
-    const asks = data.sell_levels
+        })) : [];
+    const asks = data.sell_levels ? data.sell_levels
         .map((sraOrder: any) => ({
           price: sraOrder.price,
           size: sraOrder.amount,
           hash: '',
-        }));
+        })) : [];
 
     process({ bids, asks });
   };
@@ -130,7 +130,7 @@ export default function OrderBook() {
 
     const url = `http://${SERVER_HOST}:${SERVER_PORT}/book`;
     axios.get(url).then((r: any) => {
-      console.log(r.data);
+      // console.log(r.data);
       processMessages(r.data);
     }).finally( () => {
     });

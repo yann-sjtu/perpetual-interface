@@ -62,43 +62,25 @@ export default function Fills(props: FillsProps) {
   //   onMessage: (event: WebSocketEventMap["message"]) => processMessages(event),
   // });
 
-  const processMessages = (event: { data: string }) => {
-    const response = JSON.parse(event.data);
+  const processMessages = (data: any) => {
+    // const response = JSON.parse(event.data);
 
-    let fills: Fill[] = response.payload.map((tradeRecord: TradeRecord) => ({
-      time: tradeRecord.timestamp,
+    let fills: Fill[] = data.map((tradeRecord: TradeRecord) => ({
+      time: tradeRecord.time,
       type: FillType.Market,
       side: tradeRecord.isBuy ? Side.Buy : Side.Sell,
-      amount: tradeRecord.amount,
+      amount: tradeRecord.size,
       price: tradeRecord.price,
-      totalFee: tradeRecord.amount * tradeRecord.price,
+      totalFee: tradeRecord.size * tradeRecord.price,
       liquidity:
         tradeRecord.taker !== NULL_ADDRESS
           ? TakerOrMaker.Taker
           : TakerOrMaker.Maker,
     }));
+    // console.log("fills", fills);
 
     process(fills);
   };
-
-  useEffect(() => {
-    function connect(product: string) {
-      const random = generatePseudoRandom256BitNumber();
-      const subscribeMessage = {
-        type: "subscribe",
-        channel: "trades",
-        requestId: random.toFixed(0),
-        payload: { trader: account },
-      };
-      // sendJsonMessage(subscribeMessage);
-    }
-
-    dispatch(clearFills());
-    if (account) {
-      connect("PBTC-USD");
-    }
-  }, []);
-  // }, [sendJsonMessage, account, dispatch]);
 
   const process = (data: Fill[]) => {
     if (data?.length > 0) {
@@ -112,6 +94,47 @@ export default function Fills(props: FillsProps) {
     }
   };
 
+  useEffect(() => {
+    setInterval(function () {
+      if (account) {
+        const url = `http://${SERVER_HOST}:${SERVER_PORT}/fills?addr=${account}`;
+        axios.get(url).then((r: any) => {
+          // console.log(r.data);
+          // if (!r.data) {
+          //   processMessages([]);
+          // } else {
+          //   processMessages(r.data);
+          // }
+          processMessages(r.data);
+        }).finally( () => {
+        });
+      } else {
+        console.log("fills account", account);
+      }
+    }, 2000);
+
+  }, []);
+
+  // useEffect(() => {
+  //   function connect(product: string) {
+  //     const random = generatePseudoRandom256BitNumber();
+  //     const subscribeMessage = {
+  //       type: "subscribe",
+  //       channel: "trades",
+  //       requestId: random.toFixed(0),
+  //       payload: { trader: account },
+  //     };
+  //     // sendJsonMessage(subscribeMessage);
+  //   }
+
+  //   dispatch(clearFills());
+  //   if (account) {
+  //     connect("PBTC-USD");
+  //   }
+  // }, []);
+  // }, [sendJsonMessage, account, dispatch]);
+
+
   return (
     <TableContainer>
       <Table variant="simple">
@@ -120,9 +143,10 @@ export default function Fills(props: FillsProps) {
             <Th>Time</Th>
             <Th>Type</Th>
             <Th>Side</Th>
+            <Th>Price</Th>
             <Th>Amount</Th>
-            <Th>Total/Fee</Th>
-            <Th>Liquidity</Th>
+            <Th>Total</Th>
+            {/*<Th>Liquidity</Th>*/}
           </Tr>
         </Thead>
         <Tbody>
@@ -132,9 +156,10 @@ export default function Fills(props: FillsProps) {
                   <Td>{fill.time}</Td>
                   <Td>{fill.type}</Td>
                   <Td isNumeric>{fill.side}</Td>
+                  <Td isNumeric>{fill.price}</Td>
                   <Td isNumeric>{fill.amount}</Td>
                   <Td isNumeric>{fill.totalFee}</Td>
-                  <Td isNumeric>{fill.liquidity}</Td>
+                  {/*<Td isNumeric>{fill.liquidity}</Td>*/}
                 </Tr>
               ))
             : null}

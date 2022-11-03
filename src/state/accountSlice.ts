@@ -95,7 +95,8 @@ export const accountRecords = createSlice({
   initialState,
   reducers: {
     addFills: (state, { payload }) => {
-      state.fills = state.fills.concat(payload);
+      // state.fills = state.fills.concat(payload);
+      state.fills = payload;
     },
     fetchOrders: (state, { payload }) => {
       state.orders = updateOrders(state.orders, payload);
