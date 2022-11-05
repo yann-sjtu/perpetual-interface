@@ -56,7 +56,7 @@ export const ORDER_FLAGS = {
 
 export class Orders {
   constructor(
-    protected provider: ethers.providers.JsonRpcProvider,
+    protected provider: ethers.providers.JsonRpcProvider, // 此处仅仅是类型声明，并不是真正获取provider
     private networkId: number,
     private address: address
   ) {}

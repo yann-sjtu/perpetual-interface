@@ -51,7 +51,7 @@ let currentFills: Fill[] = [];
 export const NUM_TRADESRECORD: number = 0; // rows count
 
 export default function Fills(props: FillsProps) {
-  const { account } = useWeb3React();
+  const { account, library, active } = useWeb3React();
   const fills = useAppSelector(selectFills);
   const dispatch = useAppDispatch();
 
@@ -65,7 +65,7 @@ export default function Fills(props: FillsProps) {
   const processMessages = (data: any) => {
     // const response = JSON.parse(event.data);
 
-    let fills: Fill[] = data.map((tradeRecord: TradeRecord) => ({
+    let fills: Fill[] = data ? data.map((tradeRecord: TradeRecord) => ({
       time: tradeRecord.time,
       type: FillType.Market,
       side: tradeRecord.isBuy ? Side.Buy : Side.Sell,
@@ -76,7 +76,7 @@ export default function Fills(props: FillsProps) {
         tradeRecord.taker !== NULL_ADDRESS
           ? TakerOrMaker.Taker
           : TakerOrMaker.Maker,
-    }));
+    })) : [];
     // console.log("fills", fills);
 
     process(fills);
@@ -96,24 +96,20 @@ export default function Fills(props: FillsProps) {
 
   useEffect(() => {
     setInterval(function () {
-      if (account) {
-        const url = `http://${SERVER_HOST}:${SERVER_PORT}/fills?addr=${account}`;
+      const url = `http://${SERVER_HOST}:${SERVER_PORT}/fills?addr=${account}`;
         axios.get(url).then((r: any) => {
-          // console.log(r.data);
-          // if (!r.data) {
-          //   processMessages([]);
-          // } else {
-          //   processMessages(r.data);
-          // }
+          // console.log(account,library, active);
           processMessages(r.data);
         }).finally( () => {
         });
+      if (account) {
+        
       } else {
-        console.log("fills account", account);
+        // console.log("fills account", account);
       }
     }, 2000);
 
-  }, []);
+  }, [active]);
 
   // useEffect(() => {
   //   function connect(product: string) {
