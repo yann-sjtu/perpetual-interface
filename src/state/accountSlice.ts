@@ -33,13 +33,14 @@ interface Fill {
 
 export interface Order {
   hash: string;
+  jsonOrder: string,
   status: Status;
   side: Side;
   amountInETH: number;
   filledAmountInETH: number;
   price: number;
   trigger: number;
-  goodTill: number;
+  goodTill: string;
 }
 
 interface Position {
@@ -99,8 +100,9 @@ export const accountRecords = createSlice({
       state.fills = payload;
     },
     fetchOrders: (state, { payload }) => {
-      state.orders = updateOrders(state.orders, payload);
-      console.log(state.orders.length);
+      // state.orders = updateOrders(state.orders, payload);
+      state.orders = payload;
+      // console.log(state.orders.length);
     },
     removeOrder: (state, { payload }) => {
       state.orders = state.orders.filter((order) => order.hash !== payload);

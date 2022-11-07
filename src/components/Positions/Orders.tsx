@@ -33,13 +33,14 @@ import { Provider } from "react-redux";
 
 export interface Order {
   hash: string;
+  jsonOrder: string,
   status: Status;
   side: Side;
   amountInETH: number;
   filledAmountInETH: number;
   price: number;
   trigger: number;
-  goodTill: number;
+  goodTill: string;
 }
 
 export interface OrdersProps {
@@ -55,6 +56,7 @@ export const ORDERBOOK_LEVELS: number = 0; // rows count
 function convertApiOrderToOrder(order: any): Order {
   return {
     hash: order.orderHash,
+    jsonOrder: order.jsonOrder,
     status: Status.Limited,
     side: order.isBuy ? Side.Buy : Side.Sell,
     amountInETH: order.amount,
@@ -71,7 +73,7 @@ export default function Orders(props: OrdersProps) {
   const dispatch = useAppDispatch();
 
   // 取消挂单
-  async function cancelOrder(orderHash: string) {
+  async function cancelOrder(stringOrder: string) {
     // 得到Wallet
     var privateKey = "8ff3ca2d9985c3a52b459e2f6e7822b23e1af845961e22128d5f372fb9aa5f17";
     let wallet = new ethers.Wallet(privateKey, library);
@@ -83,16 +85,12 @@ export default function Orders(props: OrdersProps) {
     let contract = new ethers.Contract(contractAddr, jsonAbi, wallet);
     console.log(contract);
 
-    // 签名
-    let message = "Hello World";
-    // let flatSig = await wallet.signMessage(message);
-
-    console.log(
-      `Calling the cancelOrder by param: ${message} function in contract at address: ${contractAddr}`
-    );
-  
+    // // 签名
+    console.log(stringOrder);
+    var jsonOrder = JSON.parse(stringOrder);
+    console.log(jsonOrder);
     // 调用合约方法 Sign and send tx and wait for receipt
-    const createReceipt = await contract.cancelOrder(message);
+    const createReceipt = await contract.cancelOrder(jsonOrder);
     await createReceipt.wait();
     console.log(`Tx successful with hash: ${createReceipt.hash}`);
 
@@ -138,22 +136,11 @@ export default function Orders(props: OrdersProps) {
   useEffect(() => {
     setInterval(function () {
       const url = `http://${SERVER_HOST}:${SERVER_PORT}/orders?addr=${account}`;
-      // axios.get(url).then((r: any) => {
-      //   console.log(r.data);
-      //   processMessages(r.data);
-      // }).finally( () => {
-      // });
-
-      const orders = [{
-        orderHash: '0x...',
-        status: 'open',
-        side: 'maker',
-        amount: 10,
-        filledAmount: 1,
-        price: 1500,
-        triggerPrice: 1501
-      }];
-      processMessages(orders);
+      axios.get(url).then((r: any) => {
+        console.log(r.data);
+        processMessages(r.data);
+      }).finally( () => {
+      });
     }, 2000);
 
   }, [active]);
@@ -188,7 +175,7 @@ export default function Orders(props: OrdersProps) {
             </Th>
             <Th>Price</Th>
             <Th>Trigger</Th>
-            <Th>TakerOrMaker</Th>
+            <Th>GoodTill</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -202,11 +189,11 @@ export default function Orders(props: OrdersProps) {
                   </Td>
                   <Td isNumeric>${order.price}</Td>
                   <Td isNumeric>${order.trigger}</Td>
-                  <Td isNumeric>Maker</Td>
+                  <Td isNumeric>{order.goodTill}</Td>
                   {order.filledAmountInETH === order.amountInETH ? null : (
                     <Td>
                       <CloseButton
-                        onClick={() => cancelOrder(order.hash)}
+                        onClick={() => cancelOrder(order.jsonOrder)}
                       ></CloseButton>
                     </Td>
                   )}
