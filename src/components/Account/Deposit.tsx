@@ -26,6 +26,7 @@ const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 const PERPETUAL_PROXY_ADDR = process.env.REACT_APP_PerpetualProxyAddr;
 const MOCKTOKEN_ADDR = process.env.REACT_APP_MockTokenAddr;
 
+
 export default function Deposit(props: { switchMode: (mode: Mode) => void }) {
   const { library, account, activate, deactivate, active } = useWeb3React();
   const dispatch = useAppDispatch();
@@ -34,31 +35,9 @@ export default function Deposit(props: { switchMode: (mode: Mode) => void }) {
   }
   const [amount, setAmount] = useState("0");
 
-  const deposit = async (amount: string) => {
-    const iface = PerpetualV1__factory.createInterface();
-    // check balance before deposit, if not enough token,
-    // request airdrop from faucet. only used in test environment
-    const mockToken = MockToken__factory.connect(
-      MOCKTOKEN_ADDR as string,
-      library
-    );
-    const balance = await mockToken.balanceOf(account);
-    if (balance.lt(amount)) {
-      const residual = BigNumber.from(amount).sub(balance);
-      await axios.post(`http://${SERVER_HOST}:${SERVER_PORT}/account/v1/drop`, {
-        amount: residual.toString(),
-        account,
-      });
-    }
-
-    // check allowance
-    const data = iface.encodeFunctionData("deposit", [account, amount]);
-    await library
-      .getSigner()
-      .sendTransaction({ to: PERPETUAL_PROXY_ADDR, data });
-    // dispatch(updatePosition({position: '', weight: ''}));
-  };
-
+  /* 
+  * approve, 用metamask在代币合约给永续合约地址授权
+  */
   const approve = async () => {
     const iface = MockToken__factory.createInterface();
     const max = ethers.constants.MaxUint256;
@@ -66,8 +45,46 @@ export default function Deposit(props: { switchMode: (mode: Mode) => void }) {
       PERPETUAL_PROXY_ADDR as string,
       max,
     ]);
+    // 授权两个参数：to是代币的合约地址；max是最大数量
     await library.getSigner().sendTransaction({ to: MOCKTOKEN_ADDR, data });
   };
+
+
+  /* 
+  * deposit-调用合约
+  */
+  const deposit = async (amount: string) => {
+    // check balance before deposit, if not enough token,
+    // request airdrop from faucet. only used in test environment
+    // 1，查询用户在该代币合约的余额，如果余额<用户输入的数量，则空投；如果余额≥用户输入的数量，则直接deposit
+    const mockToken = MockToken__factory.connect(
+      MOCKTOKEN_ADDR as string,
+      library
+    );
+    const balance = await mockToken.balanceOf(account);
+
+    // 空投逻辑
+    if (balance.lt(amount)) { // 余额小于用户输入的数量
+      throw new Error("余额不足");
+      // const residual = BigNumber.from(amount).sub(balance);
+      // await axios.post(`http://${SERVER_HOST}:${SERVER_PORT}/account/v1/drop`, {
+      //   amount: residual.toString(),
+      //   account,
+      // });
+    }
+
+    // 2，deposit
+    const iface = PerpetualV1__factory.createInterface();
+    // check allowance
+    const data = iface.encodeFunctionData("deposit", [account, amount]);
+    // 授权两个参数：to是永续合约的地址；data是deposit(account, amount)
+    await library
+      .getSigner()
+      .sendTransaction({ to: PERPETUAL_PROXY_ADDR, data });
+    // dispatch(updatePosition({position: '', weight: ''}));
+  };
+
+  
   return (
     <>
       <VStack align="left">

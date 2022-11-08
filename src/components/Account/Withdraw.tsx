@@ -29,6 +29,9 @@ export default function Withdraw(props: { switchMode: (mode: Mode) => void }) {
     throw new Error(`connect to wallet first`);
   }
 
+  /* 
+  * withdraw-调用合约
+  */
   const withdraw = async (amount: string) => {
     const iface = PerpetualV1__factory.createInterface();
     const data = iface.encodeFunctionData("withdraw", [

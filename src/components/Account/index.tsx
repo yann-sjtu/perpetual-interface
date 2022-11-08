@@ -35,7 +35,6 @@ export default function Account(props: { switchMode: (mode: Mode) => void }) {
 
   useEffect(() => {
     const fetchAccountBalance = async () => {
-      // const url = `http://${SERVER_HOST}:${SERVER_PORT}/account/v1/${account}`;
       const url = `http://${SERVER_HOST}:${SERVER_PORT}/position?addr=${account}`;
       const res = await axios.get(url);
       const margin = res.data.margin;
