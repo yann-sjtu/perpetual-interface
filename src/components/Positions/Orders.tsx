@@ -56,7 +56,7 @@ export const ORDERBOOK_LEVELS: number = 0; // rows count
 function convertApiOrderToOrder(order: any): Order {
   return {
     hash: order.orderHash,
-    jsonOrder: order.jsonOrder,
+    jsonOrder: order.order,
     status: Status.Limited,
     side: order.isBuy ? Side.Buy : Side.Sell,
     amountInETH: order.amount,
@@ -176,11 +176,11 @@ export default function Orders(props: OrdersProps) {
                 <Tr key={i}>
                   <Td>{order.status}</Td>
                   <Td>{order.side}</Td>
-                  <Td isNumeric>
+                  <Td>
                     {order.amountInETH}/{order.filledAmountInETH}
                   </Td>
-                  <Td isNumeric>${order.price}</Td>
-                  <Td isNumeric>${order.trigger}</Td>
+                  <Td>${order.price}</Td>
+                  <Td>${order.trigger}</Td>
                   <Td isNumeric>{order.goodTill}</Td>
                   {order.filledAmountInETH === order.amountInETH ? null : (
                     <Td>

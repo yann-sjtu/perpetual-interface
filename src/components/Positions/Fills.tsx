@@ -69,9 +69,9 @@ export default function Fills(props: FillsProps) {
       time: tradeRecord.time,
       type: FillType.Market,
       side: tradeRecord.isBuy ? Side.Buy : Side.Sell,
-      amount: tradeRecord.size,
+      amount: tradeRecord.amount,
       price: tradeRecord.price,
-      totalFee: tradeRecord.size * tradeRecord.price,
+      totalFee: tradeRecord.amount * tradeRecord.price,
       liquidity:
         tradeRecord.taker !== NULL_ADDRESS
           ? TakerOrMaker.Taker

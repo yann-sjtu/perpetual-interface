@@ -105,24 +105,26 @@ export default function OrderBook() {
   };
 
   const process = (data: DeltaOrders) => {
-    if (data?.bids?.length > 0) {
-      currentBids = [...currentBids, ...data.bids];
+    dispatch(addBids(data.bids));
+    dispatch(addAsks(data.asks));
+    // if (data?.bids?.length > 0) {
+    //   currentBids = [...currentBids, ...data.bids];
 
-      if (currentBids.length > ORDERBOOK_LEVELS) {
-        dispatch(addBids(currentBids));
-        currentBids = [];
-        currentBids.length = 0;
-      }
-    }
-    if (data?.asks?.length >= 0) {
-      currentAsks = [...currentAsks, ...data.asks];
+    //   if (currentBids.length > ORDERBOOK_LEVELS) {
+    //     dispatch(addBids(currentBids));
+    //     currentBids = [];
+    //     currentBids.length = 0;
+    //   }
+    // }
+    // if (data?.asks?.length >= 0) {
+    //   currentAsks = [...currentAsks, ...data.asks];
 
-      if (currentAsks.length > ORDERBOOK_LEVELS) {
-        dispatch(addAsks(currentAsks));
-        currentAsks = [];
-        currentAsks.length = 0;
-      }
-    }
+    //   if (currentAsks.length > ORDERBOOK_LEVELS) {
+    //     dispatch(addAsks(currentAsks));
+    //     currentAsks = [];
+    //     currentAsks.length = 0;
+    //   }
+    // }
   };
 
   useEffect(() => {
