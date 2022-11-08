@@ -70,8 +70,9 @@ export default function Fills(props: FillsProps) {
       type: FillType.Market,
       side: tradeRecord.isBuy ? Side.Buy : Side.Sell,
       amount: tradeRecord.amount,
+      filled: tradeRecord.filled,
       price: tradeRecord.price,
-      totalFee: tradeRecord.amount * tradeRecord.price,
+      totalFee: tradeRecord.filled * tradeRecord.price,
       liquidity:
         tradeRecord.taker !== NULL_ADDRESS
           ? TakerOrMaker.Taker
@@ -151,10 +152,10 @@ export default function Fills(props: FillsProps) {
                 <Tr key={i}>
                   <Td>{fill.time}</Td>
                   <Td>{fill.type}</Td>
-                  <Td isNumeric>{fill.side}</Td>
-                  <Td isNumeric>{fill.price}</Td>
-                  <Td isNumeric>{fill.amount}</Td>
-                  <Td isNumeric>{fill.totalFee}</Td>
+                  <Td>{fill.side}</Td>
+                  <Td>{fill.price}</Td>
+                  <Td>{fill.filled / fill.amount}</Td>
+                  <Td>{fill.totalFee}</Td>
                   {/*<Td isNumeric>{fill.liquidity}</Td>*/}
                 </Tr>
               ))

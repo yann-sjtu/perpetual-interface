@@ -181,7 +181,7 @@ export default function Orders(props: OrdersProps) {
                   </Td>
                   <Td>${order.price}</Td>
                   <Td>${order.trigger}</Td>
-                  <Td isNumeric>{order.goodTill}</Td>
+                  <Td>{order.goodTill}</Td>
                   {order.filledAmountInETH === order.amountInETH ? null : (
                     <Td>
                       <CloseButton
