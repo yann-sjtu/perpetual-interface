@@ -85,16 +85,16 @@ export default function Fills(props: FillsProps) {
   };
 
   const process = (data: Fill[]) => {
-    dispatch(addFills(data));
-    // if (data?.length > 0) {
-    //   currentFills = [...currentFills, ...data];
+    // dispatch(addFills(data));
+    if (data?.length > 0) {
+      currentFills = [...currentFills, ...data];
 
-    //   if (currentFills.length > NUM_TRADESRECORD) {
-    //     dispatch(addFills(currentFills));
-    //     currentFills = [];
-    //     currentFills.length = 0;
-    //   }
-    // }
+      if (currentFills.length > NUM_TRADESRECORD) {
+        dispatch(addFills(currentFills));
+        currentFills = [];
+        currentFills.length = 0;
+      }
+    }
   };
 
   useEffect(() => {
