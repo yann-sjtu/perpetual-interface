@@ -22,6 +22,7 @@ export enum TakerOrMaker {
 }
 
 interface Fill {
+  filled: string;
   time: number;
   type: FillType;
   side: Side;

@@ -34,6 +34,7 @@ export interface Fill {
   type: FillType;
   side: Side;
   amount: number;
+  filled: number;
   price: number;
   totalFee: number;
   liquidity: TakerOrMaker;
@@ -65,7 +66,7 @@ export default function Fills(props: FillsProps) {
   const processMessages = (data: any) => {
     // const response = JSON.parse(event.data);
 
-    let fills: Fill[] = data ? data.map((tradeRecord: TradeRecord) => ({
+    let fills: Fill[] = data.length ? data.map((tradeRecord: TradeRecord) => ({
       time: tradeRecord.time,
       type: FillType.Market,
       side: tradeRecord.isBuy ? Side.Buy : Side.Sell,
@@ -84,15 +85,16 @@ export default function Fills(props: FillsProps) {
   };
 
   const process = (data: Fill[]) => {
-    if (data?.length > 0) {
-      currentFills = [...currentFills, ...data];
+    dispatch(addFills(data));
+    // if (data?.length > 0) {
+    //   currentFills = [...currentFills, ...data];
 
-      if (currentFills.length > NUM_TRADESRECORD) {
-        dispatch(addFills(currentFills));
-        currentFills = [];
-        currentFills.length = 0;
-      }
-    }
+    //   if (currentFills.length > NUM_TRADESRECORD) {
+    //     dispatch(addFills(currentFills));
+    //     currentFills = [];
+    //     currentFills.length = 0;
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -103,11 +105,6 @@ export default function Fills(props: FillsProps) {
           processMessages(r.data);
         }).finally( () => {
         });
-      if (account) {
-        
-      } else {
-        // console.log("fills account", account);
-      }
     }, 2000);
 
   }, [active]);
@@ -154,7 +151,7 @@ export default function Fills(props: FillsProps) {
                   <Td>{fill.type}</Td>
                   <Td>{fill.side}</Td>
                   <Td>{fill.price}</Td>
-                  <Td>{fill.filled / fill.amount}</Td>
+                  <Td>{fill ? (fill.filled + ' / ' + fill.amount) : ''}</Td>
                   <Td>{fill.totalFee}</Td>
                   {/*<Td isNumeric>{fill.liquidity}</Td>*/}
                 </Tr>

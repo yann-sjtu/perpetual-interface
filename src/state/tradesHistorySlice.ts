@@ -8,6 +8,7 @@ export interface TradeRecord {
   isBuy: boolean;
   price: number;
   amount: number;
+  filled: number;
   time: number;
   blockNumber: number;
 }
