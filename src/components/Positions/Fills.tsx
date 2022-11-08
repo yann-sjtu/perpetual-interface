@@ -85,26 +85,28 @@ export default function Fills(props: FillsProps) {
   };
 
   const process = (data: Fill[]) => {
-    // dispatch(addFills(data));
-    if (data?.length > 0) {
-      currentFills = [...currentFills, ...data];
+    dispatch(addFills(data));
+    // if (data?.length > 0) {
+    //   currentFills = [...currentFills, ...data];
 
-      if (currentFills.length > NUM_TRADESRECORD) {
-        dispatch(addFills(currentFills));
-        currentFills = [];
-        currentFills.length = 0;
-      }
-    }
+    //   if (currentFills.length > NUM_TRADESRECORD) {
+    //     dispatch(addFills(currentFills));
+    //     currentFills = [];
+    //     currentFills.length = 0;
+    //   }
+    // }
   };
 
   useEffect(() => {
     setInterval(function () {
-      const url = `http://${SERVER_HOST}:${SERVER_PORT}/fills?addr=${account}`;
+      if (account) {
+        const url = `http://${SERVER_HOST}:${SERVER_PORT}/fills?addr=${account}`;
         axios.get(url).then((r: any) => {
           // console.log(account,library, active);
           processMessages(r.data);
         }).finally( () => {
         });
+      }
     }, 2000);
 
   }, [active]);

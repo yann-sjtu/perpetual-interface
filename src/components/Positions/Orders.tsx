@@ -115,24 +115,27 @@ export default function Orders(props: OrdersProps) {
   };
 
   const processData = (data: Order[]) => {
-    if (data.length >= 0) {
-      currentOrders = [...currentOrders, ...data];
+    dispatch(fetchOrders(data));
+    // if (data.length >= 0) {
+    //   currentOrders = [...currentOrders, ...data];
 
-      if (currentOrders.length > ORDERBOOK_LEVELS) {
-        dispatch(fetchOrders(currentOrders));
-        currentOrders = [];
-      }
-    }
+    //   if (currentOrders.length > ORDERBOOK_LEVELS) {
+    //     dispatch(fetchOrders(currentOrders));
+    //     currentOrders = [];
+    //   }
+    // }
   };
 
   useEffect(() => {
     setInterval(function () {
-      const url = `http://${SERVER_HOST}:${SERVER_PORT}/orders?addr=${account}`;
-      axios.get(url).then((r: any) => {
-        console.log(r.data);
-        processMessages(r.data);
-      }).finally( () => {
-      });
+      if (account) {
+        const url = `http://${SERVER_HOST}:${SERVER_PORT}/orders?addr=${account}`;
+        axios.get(url).then((r: any) => {
+          console.log(r.data);
+          processMessages(r.data);
+        }).finally( () => {
+        });
+      }
     }, 2000);
 
   }, [active]);
