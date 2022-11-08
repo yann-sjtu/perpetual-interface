@@ -44,7 +44,9 @@ export default function Account(props: { switchMode: (mode: Mode) => void }) {
       );
     };
     if (account) {
-      fetchAccountBalance();
+      setInterval(function() {
+        fetchAccountBalance();
+      }, 3 * 1000)
     }
   }, [account, dispatch]);
 

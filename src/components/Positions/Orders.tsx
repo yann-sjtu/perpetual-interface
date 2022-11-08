@@ -29,7 +29,7 @@ import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { Provider } from "react-redux";
 import { P1Orders__factory } from "../../typechain";
-const PERPETUAL_PROXY_ADDR = process.env.REACT_APP_PerpetualProxyAddr;
+const P1Orders_PROXY_ADDR = process.env.REACT_APP_P1OrderAddr;
 
 export interface Order {
   hash: string;
@@ -84,7 +84,7 @@ export default function Orders(props: OrdersProps) {
     ]);
     await library
       .getSigner()
-      .sendTransaction({ to: PERPETUAL_PROXY_ADDR, data });
+      .sendTransaction({ to: P1Orders_PROXY_ADDR, data });
 
     // await axios.post(
     //   `http://${SERVER_HOST}:${SERVER_PORT}/orderbook/v1/cancelOrder`,
