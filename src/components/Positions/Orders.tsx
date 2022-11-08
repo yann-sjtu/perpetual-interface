@@ -84,7 +84,7 @@ export default function Orders(props: OrdersProps) {
     ]);
     await library
       .getSigner()
-      .sendTransaction({ to: P1Orders_PROXY_ADDR, data });
+      .sendTransaction({ to: P1Orders_PROXY_ADDR, data, gasLimit: 300000 });
 
     // await axios.post(
     //   `http://${SERVER_HOST}:${SERVER_PORT}/orderbook/v1/cancelOrder`,
