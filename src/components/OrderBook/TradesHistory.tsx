@@ -7,6 +7,7 @@ import {
   Text,
   Spacer,
   Spinner,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   addTradeRecords,
@@ -27,6 +28,7 @@ interface TradeRecordRowProps {
   amount: string;
   price: string;
   time: string;
+  side: string;
 }
 
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT;
@@ -35,9 +37,9 @@ const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 const WSS_FEED_URL: string = `ws://${SERVER_HOST}:${SERVER_PORT}/orderbook/v1`;
 export const NUM_TRADESRECORD: number = 0; // rows count
 
-function TradeRecordRow({ amount, price, time }: TradeRecordRowProps) {
+function TradeRecordRow({ amount, price, time, side }: TradeRecordRowProps) {
   return (
-    <HStack>
+    <HStack color={useColorModeValue(side.toLowerCase() == "buy" ? "green" : "red", "gray.999")}>
       <Text>{amount}</Text>
       <Spacer />
       <Text>{price}</Text>
@@ -131,8 +133,7 @@ export default function TradesHistory() {
           <TradeRecordRow
             amount={size}
             price={price}
-            time={trade.time.toString()}
-          />
+            time={trade.time.toString()} side={trade.side}          />
         </Box>
       );
     });
