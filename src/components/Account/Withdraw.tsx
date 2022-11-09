@@ -14,15 +14,18 @@ import {
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { Mode } from "../../utils/types";
 import axios from "axios";
 import { ethers, BigNumber } from "ethers";
 import { PerpetualV1__factory, MockToken__factory } from "../../typechain";
+import { selectPosition } from "../../state/accountSlice";
 
 const PERPETUAL_PROXY_ADDR = process.env.REACT_APP_PerpetualProxyAddr;
 
 export default function Withdraw(props: { switchMode: (mode: Mode) => void }) {
   const { library, account, activate, deactivate, active } = useWeb3React();
+  const position = useAppSelector(selectPosition);
   const [amount, setAmount] = useState("0");
 
   if (!account) {
@@ -102,7 +105,7 @@ export default function Withdraw(props: { switchMode: (mode: Mode) => void }) {
           <Text>
             Wallet<Tag>USDC</Tag>
           </Text>{" "}
-          <Spacer /> <Text>0.00000</Text>
+          <Spacer /> <Text>${position.erc20Balance}</Text>
         </HStack>
         <Button onClick={() => withdraw(amount)}>Confirm withdraw</Button>
       </VStack>

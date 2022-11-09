@@ -47,6 +47,7 @@ export interface Order {
 interface Position {
   margin: number;
   position: number;
+  erc20Balance: number;
 }
 
 export function updateOrders(currentOrders: Order[], updates: Order[]) {
@@ -89,7 +90,7 @@ const initialState: AccountRecords = {
   market: "PI_XBTUSD", // PI_ETHUSD
   fills: [],
   orders: [],
-  position: { margin: 0, position: 0 },
+  position: { margin: 0, position: 0, erc20Balance: 0 },
 };
 
 export const accountRecords = createSlice({

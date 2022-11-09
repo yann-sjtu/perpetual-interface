@@ -39,8 +39,9 @@ export default function Account(props: { switchMode: (mode: Mode) => void }) {
       const res = await axios.get(url);
       const margin = res.data.margin;
       const position = res.data.position;
+      const erc20Balance = res.data.erc20Balance;
       dispatch(
-        updatePosition({ margin: margin, position: position })
+        updatePosition({ margin: margin, position: position, erc20Balance: erc20Balance })
       );
     };
     if (account) {
