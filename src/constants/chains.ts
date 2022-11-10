@@ -9,7 +9,7 @@ export enum SupportedChainId {
   OKCTest = 65,
   POLYGON = 137,
   // LOCAL = 31337,
-  LOCAL = 67,
+  LOCAL = 64,
 
   ARBITRUM_ONE = 42161,
   ARBITRUM_RINKEBY = 421611,
