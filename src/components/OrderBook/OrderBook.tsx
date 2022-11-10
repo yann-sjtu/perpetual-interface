@@ -162,9 +162,9 @@ export default function OrderBook() {
     });
   };
 
-  const buildPriceLevels = (orders: ApiOrder[]): React.ReactNode => {
+  const buildPriceLevels = (orders: ApiOrder[], side: string): React.ReactNode => {
     if (!orders.length) {
-      return <PriceLevelRow size={"-"} price={"-"} key={"-"} />;
+      return <PriceLevelRow size={"-"} price={"-"} key={"-"} side={side} />;
     }
     const sortedLevelsByPrice: ApiOrder[] = [...orders].sort(
       (current: ApiOrder, next: ApiOrder) => {
@@ -176,7 +176,7 @@ export default function OrderBook() {
       const size: string = formatNumber(order.size);
       const price: string = formatPrice(order.price);
 
-      return <PriceLevelRow size={size} price={price} key={idx} />;
+      return <PriceLevelRow size={size} price={price} key={idx} side={side} />;
     });
   };
 
@@ -196,13 +196,13 @@ export default function OrderBook() {
       {bids.length || asks.length ? (
         <Box>
           <TableContainer h="45%">
-            <Box>{buildPriceLevels(asks)}</Box>
+            <Box>{buildPriceLevels(asks, 'ask')}</Box>
           </TableContainer>
 
           <Spread bids={bids} asks={asks} />
 
           <TableContainer h="45%">
-            <div>{buildPriceLevels(bids)}</div>
+            <div>{buildPriceLevels(bids, 'bid')}</div>
           </TableContainer>
         </Box>
       ) : (
