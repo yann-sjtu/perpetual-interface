@@ -65,12 +65,17 @@ export default function Deposit(props: { switchMode: (mode: Mode) => void }) {
 
     // 空投逻辑
     if (balance.lt(amount)) { // 余额小于用户输入的数量
-      throw new Error("余额不足");
+      //throw new Error("余额不足");
       // const residual = BigNumber.from(amount).sub(balance);
-      // await axios.post(`http://${SERVER_HOST}:${SERVER_PORT}/account/v1/drop`, {
+      // await axios.post(`http://${SERVER_HOST}:${SERVER_PORT}/drop`, {
       //   amount: residual.toString(),
       //   account,
       // });
+      const residual = BigNumber.from(amount).sub(balance);
+      await axios.get(`http://${SERVER_HOST}:${SERVER_PORT}/drop?amount=${residual.toString()}&addr=${account}`).then((r: any) => {
+        console.log(r.data);
+      }).finally( () => {
+      });
     }
 
     // 2，deposit
@@ -80,7 +85,7 @@ export default function Deposit(props: { switchMode: (mode: Mode) => void }) {
     // 授权两个参数：to是永续合约的地址；data是deposit(account, amount)
     await library
       .getSigner()
-      .sendTransaction({ to: PERPETUAL_PROXY_ADDR, data });
+      .sendTransaction({ to: PERPETUAL_PROXY_ADDR, data, gasLimit: 300000 });
     // dispatch(updatePosition({position: '', weight: ''}));
   };
 
