@@ -32,7 +32,7 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                 await (window.ethereum as any).request({
                   method: 'wallet_switchEthereumChain',
                   params: [{
-                    chainId: "0x41" // 目标链ID
+                    chainId: "0x40" // 目标链ID
                   }]
                 })
                 console.log('wallet_switchEthereumChain');
@@ -41,19 +41,20 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                 if ((e as any).code === 4902) {
                   try {
                     console.log('wallet_addEthereumChain');
+                    // @ts-ignore
                     await (window.ethereum as any).request({
                         method: 'wallet_addEthereumChain',
                         params: [
                           {
-                            chainId: "0x41", // 目标链ID
+                            chainId: "0x40", // 目标链ID
                             chainName: 'OKC Testnet',
                             nativeCurrency: {
                               name: 'OKT',
                               symbol: 'OKT',
                               decimals: 18
                             },
-                            rpcUrls: ['https://exchaintestrpc.okex.org'], // 节点
-                            blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
+                            rpcUrls: ['http://52.199.88.250:8545'], // 节点
+                            //blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
                           }
                         ]
                       })
