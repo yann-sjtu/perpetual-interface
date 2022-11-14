@@ -23,9 +23,46 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
       <VStack>
         <Button
           variant="outline"
-          onClick={() => {
+          onClick={async () => {
             activate(option.connector);
             onClose();
+
+            if (window.ethereum) {
+              try {
+                await (window.ethereum as any).request({
+                  method: 'wallet_switchEthereumChain',
+                  params: [{
+                    chainId: "0x41" // 目标链ID
+                  }]
+                })
+                console.log('wallet_switchEthereumChain');
+              } catch (e) {
+                console.log('(e as any).code', (e as any).code);
+                if ((e as any).code === 4902) {
+                  try {
+                    console.log('wallet_addEthereumChain');
+                    await (window.ethereum as any).request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          {
+                            chainId: "0x41", // 目标链ID
+                            chainName: 'OKC Testnet',
+                            nativeCurrency: {
+                              name: 'OKT',
+                              symbol: 'OKT',
+                              decimals: 18
+                            },
+                            rpcUrls: ['https://exchaintestrpc.okex.org'], // 节点
+                            blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
+                          }
+                        ]
+                      })
+                  } catch (ee) {
+                    //
+                  }
+                } else if ((e as any).code === 4001) return
+              }
+            }
           }}
           w="100%"
         >
