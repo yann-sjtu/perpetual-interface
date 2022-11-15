@@ -52,7 +52,7 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                               symbol: 'OKT',
                               decimals: 18
                             },
-                            rpcUrls: ['https://okc.exchaindevrpc.com:26659'], // 节点
+                            rpcUrls: ['https://okc.exchaindevrpc.com:8552'], // 节点
                             //blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
                           }
                         ]
