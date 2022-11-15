@@ -47,13 +47,13 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                         params: [
                           {
                             chainId: "0x40", // 目标链ID
-                            chainName: 'OKC Testnet',
+                            chainName: 'OKC Devnet',
                             nativeCurrency: {
                               name: 'OKT',
                               symbol: 'OKT',
                               decimals: 18
                             },
-                            rpcUrls: ['http://52.199.88.250:8545'], // 节点
+                            rpcUrls: ['https://okc.exchaindevrpc.com:8551'], // 节点
                             //blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
                           }
                         ]
