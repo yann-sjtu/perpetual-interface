@@ -32,7 +32,7 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                 await (window.ethereum as any).request({
                   method: 'wallet_switchEthereumChain',
                   params: [{
-                    chainId: "0x41" // 目标链ID
+                    chainId: "0x5a2" // 目标链ID
                   }]
                 })
                 console.log('wallet_switchEthereumChain');
@@ -40,25 +40,26 @@ export default function WalletModal({ isOpen, onClose }: UseModalProps) {
                 console.log('(e as any).code', (e as any).code);
                 if ((e as any).code === 4902) {
                   try {
-                    console.log('wallet_addEthereumChain');
+                    console.log('wallet_addEthereumChain Switch');
                     await (window.ethereum as any).request({
                         method: 'wallet_addEthereumChain',
                         params: [
                           {
-                            chainId: "0x41", // 目标链ID
-                            chainName: 'OKC Testnet',
+                            chainId: "0x5a2", // 目标链ID
+                            chainName: 'Polygon zkEVM Testnet',
                             nativeCurrency: {
-                              name: 'OKT',
-                              symbol: 'OKT',
+                              name: 'ETH',
+                              symbol: 'ETH',
                               decimals: 18
                             },
-                            rpcUrls: ['https://exchaintestrpc.okex.org'], // 节点
-                            blockExplorerUrls: ['https://www.oklink.com/zh-cn/okc-test']
+                            rpcUrls: ['https://rpc.public.zkevm-test.net'], // 节点
+                            blockExplorerUrls: ['https://explorer.public.zkevm-test.net']
                           }
                         ]
                       })
                   } catch (ee) {
                     //
+                    console.log('catch', ee);
                   }
                 } else if ((e as any).code === 4001) return
               }
