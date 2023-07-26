@@ -157,6 +157,7 @@ export default function LimitOrder() {
     const paramStr = `?maker=${account}&isBuy=${isBuy}&amount=${orderArgs.size}&limitPrice=${orderArgs.price}`;
 
     const constructOrder = await axios.get(url + paramStr);
+    console.log("res:", constructOrder.data)
     const orderBytes = constructOrder.data.order
     const encodeHash = `0x${constructOrder.data.hash}`;
 

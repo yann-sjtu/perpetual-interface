@@ -89,6 +89,7 @@ export class Orders {
         const rawSignature = await this.provider
           .getSigner(order.maker)
           .signMessage(ethers.utils.arrayify(encodeHash));
+        console.log(order.maker, rawSignature);
         const hashSig = createTypedSignature(
           rawSignature,
           SIGNATURE_TYPES.DECIMAL

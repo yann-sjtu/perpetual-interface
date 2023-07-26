@@ -293,6 +293,7 @@ export async function signPlaceOrder(
 
   const orders = new Orders(library, parseInt(networkId), address);
   console.log('orders', order, orders);
+  console.log("encodeHash:", encodeHash);
   const typedSignature = await orders.signOrder(encodeHash, order, SigningMethod.Hash);
 
   return typedSignature;
